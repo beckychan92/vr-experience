@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/beckychan92/vr-experience/issues"
   },
-  "homepage": "https://github.com/beckychan92/vr-experience#readme"
+  "homepage": "https://github.com/beckychan92/vr-experience#readme",
+  "dependencies" : {
+    "express" : "^4.14.0"
+  }
 }
