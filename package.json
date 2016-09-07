@@ -16,7 +16,9 @@
     "url": "https://github.com/beckychan92/vr-experience/issues"
   },
   "homepage": "https://github.com/beckychan92/vr-experience#readme",
-  "dependencies" : {
-    "express" : "^4.14.0"
+  "dependencies": {
+    "curljs": "^0.1.2",
+    "express": "^4.14.0",
+    "node-libcurl": "^1.0.0"
   }
 }

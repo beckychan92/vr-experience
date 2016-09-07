@@ -4,18 +4,19 @@ var options = {
   port: 443,
   path: "/2.0/folders/11207692482/items",
   headers: {
-    "Authorization": "Bearer BJLd2xm53H33kvY40c780tEWWRy7Wcyz"
+    "Authorization": "Bearer utuuZ76I0mFQKfYKKn512QzG7vnnlJ5o"
   },
   method: "GET"
 }
 
-function boxAPI () {
+function boxAPI(callback) {
   https.get(options, function(res) {
     console.log("statusCode: ", res.statusCode);
     console.log("headers: ", res.headers);
 
     res.on("data", function(d) {
      process.stdout.write(d);
+     callback(d);
    });
   }).on("error", function(e) {
     console.error(e);
