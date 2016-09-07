@@ -46,13 +46,18 @@ var boxAPI = {
   },
   getFolderInfo: function(id, callback) {
     var path =  "/2.0/folders/" + id + "/items";
-    this._makeRequest(path, callback);
+    this._makeApiRequest(path, callback);
   },
   getFileInfo: function(id, callback) {
     var path =  "/2.0/files/" + id;
-    this._makeRequest(path, callback);
+    this._makeApiRequest(path, callback);
   },
-  _makeRequest: function(path, callback) {
+  getStaticFile: function(id, callback) {
+    var path = "/shared/static/" + id;
+    this._makeAppRequest(path, callback);
+    //var url = "https://app.box.com/shared/static/" + id;
+  },
+  _makeApiRequest: function(path, callback) {
     var opts = Object.assign({}, options);
     opts.path = path;
 
@@ -61,6 +66,20 @@ var boxAPI = {
       res.on("data", function(d) {
         var obj = JSON.parse(d.toString());
         callback(obj);
+     });
+    }).on("error", function(e) {
+      console.error(e);
+    });
+  },
+  _makeAppRequest: function(path, callback) {
+    var opts = Object.assign({}, options);
+    opts.host = "app.box.com";
+    opts.path = path;
+
+    https.get(opts, function(res) {
+
+      res.on("data", function(d) {
+        callback(d);
      });
     }).on("error", function(e) {
       console.error(e);
