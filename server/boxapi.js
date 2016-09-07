@@ -15,19 +15,52 @@ var boxAPI = {
   getRootFolderInfo: function(callback) {
     return this.getFolderInfo(11207692482, callback);
   },
-  getFolderInfo: function(id, callback) {
+  getRootFileUrls: function(callback) {
 
+    var results = [];
+    var self = this;
+
+    self.getRootFolderInfo(function(folderData) {
+
+      var fileResponses = 0;
+      var expectedCount = folderData.entries.length;
+
+      folderData.entries.forEach(function(folderItem) {
+
+        self.getFileInfo(folderItem.id, function(fileInfo) {
+
+          if (fileInfo.shared_link) {
+            results.push(fileInfo.shared_link.download_url);
+          }
+
+          fileResponses++;
+          if (fileResponses === expectedCount) {
+            callback(results);
+          }
+
+        });
+
+      });
+
+    });
+  },
+  getFolderInfo: function(id, callback) {
     var path =  "/2.0/folders/" + id + "/items";
+    this._makeRequest(path, callback);
+  },
+  getFileInfo: function(id, callback) {
+    var path =  "/2.0/files/" + id;
+    this._makeRequest(path, callback);
+  },
+  _makeRequest: function(path, callback) {
     var opts = Object.assign({}, options);
     opts.path = path;
 
     https.get(opts, function(res) {
-      console.log("statusCode: ", res.statusCode);
-      console.log("headers: ", res.headers);
 
       res.on("data", function(d) {
-       process.stdout.write(d);
-       callback(d);
+        var obj = JSON.parse(d.toString());
+        callback(obj);
      });
     }).on("error", function(e) {
       console.error(e);
