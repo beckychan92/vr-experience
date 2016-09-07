@@ -5,8 +5,13 @@ var express = require('express');
 var app = express();
 
 app.get('/data.json', function(req, res) {
-	boxapi(function(data){
-		res.send(data.toString());
+	boxapi.getRootFolderInfo(function(data){
+		data = JSON.parse(data.toString());
+		var count = data.entries.length;
+		for (var i=0; i<count; i++) {
+			data.entries[i].url = "";
+		}
+		res.send(data);
 	})
 })
 
