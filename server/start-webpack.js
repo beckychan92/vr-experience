@@ -10,6 +10,9 @@ var compiler = new Webpack({
     ],
     "david": [
       __dirname + '/../client/david.html'
+    ],
+    "latha": [
+      __dirname + '/../client/latha.html'
     ]
   },
   output: {
