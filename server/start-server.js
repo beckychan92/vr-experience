@@ -4,18 +4,15 @@ var boxapi = require('./boxapi.js')
 var express = require('express');
 var app = express();
 
-app.get('/data.json', function(req, res) {
+app.get('/data.json', function(request, response) {
 	boxapi.getRootFileUrls(function(urls) {
-		console.info(urls);
-		res.send(urls);
+		response.send(urls);
 	});
 });
 
-app.get('/box-proxy/:url', function(req, res) {
-	console.info('box proxy requested',req.params.url);
-	boxapi.getStaticFile(req.params.url, function(file) {
-		res.send(file);
-	});
+app.get('/box-content-proxy/:id', function(request, response) {
+	console.info('box content proxy requested',request.params.id);
+	boxapi.streamFileContent(request.params.id, response);
 });
 
 app.use('/', express.static('client'));

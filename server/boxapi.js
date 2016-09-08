@@ -1,10 +1,9 @@
-var https = require("https");
+var https = require('follow-redirects').https;
 
-var BEARER = 'utuuZ76I0mFQKfYKKn512QzG7vnnlJ5o';
+var BEARER = require('./bearer.js');
 
 var options = {
   host: "api.box.com",
-  port: 443,
   headers: {
     "Authorization": "Bearer " + BEARER
   },
@@ -22,42 +21,27 @@ var boxAPI = {
 
     self.getRootFolderInfo(function(folderData) {
 
-      var fileResponses = 0;
-      var expectedCount = folderData.entries.length;
-
       folderData.entries.forEach(function(folderItem) {
-
-        self.getFileInfo(folderItem.id, function(fileInfo) {
-
-          if (fileInfo.shared_link) {
-            results.push(fileInfo.shared_link.download_url);
-          }
-
-          fileResponses++;
-          if (fileResponses === expectedCount) {
-            callback(results);
-          }
-
-        });
-
+        results.push('/box-content-proxy/' + folderItem.id);
       });
+
+      callback(results);
 
     });
   },
   getFolderInfo: function(id, callback) {
     var path =  "/2.0/folders/" + id + "/items";
-    this._makeApiRequest(path, callback);
+    this._getApiJson(path, callback);
   },
   getFileInfo: function(id, callback) {
     var path =  "/2.0/files/" + id;
-    this._makeApiRequest(path, callback);
+    this._getApiJson(path, callback);
   },
-  getStaticFile: function(id, callback) {
-    var path = "/shared/static/" + id;
-    this._makeAppRequest(path, callback);
-    //var url = "https://app.box.com/shared/static/" + id;
+  streamFileContent: function(id, stream) {
+    var path = "/2.0/files/" + id + "/content";
+    this._streamApiFile(path, stream);
   },
-  _makeApiRequest: function(path, callback) {
+  _getApiJson: function(path, callback) {
     var opts = Object.assign({}, options);
     opts.path = path;
 
@@ -66,21 +50,18 @@ var boxAPI = {
       res.on("data", function(d) {
         var obj = JSON.parse(d.toString());
         callback(obj);
-     });
+      });
+
     }).on("error", function(e) {
       console.error(e);
     });
   },
-  _makeAppRequest: function(path, callback) {
+  _streamApiFile: function(path, stream) {
     var opts = Object.assign({}, options);
-    opts.host = "app.box.com";
     opts.path = path;
 
     https.get(opts, function(res) {
-
-      res.on("data", function(d) {
-        callback(d);
-     });
+      res.pipe(stream);
     }).on("error", function(e) {
       console.error(e);
     });
