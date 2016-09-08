@@ -1,6 +1,6 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Client from './Client';
+import ConnectedClient from './ConnectedClient';
 
-ReactDOM.render(<Client/>, document.querySelector('#app'));
+ReactDOM.render(<ConnectedClient/>, document.querySelector('#app'));

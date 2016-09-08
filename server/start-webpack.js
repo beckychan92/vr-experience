@@ -13,6 +13,10 @@ var compiler = new Webpack({
     ],
     "latha": [
       __dirname + '/../client/latha.html'
+    ],
+    "machinelearning": [
+      __dirname + '/../client/machinelearning.html',
+      __dirname + '/../client/machinelearning.js'
     ]
   },
   output: {
@@ -32,10 +36,14 @@ var compiler = new Webpack({
       {
         test: /\.html$/,
         loader: 'file-loader?name=[name].[ext]'
+      },
+      {
+        test: /\.json$/,
+        loader: 'json-loader'
       }
     ]
   },
-  watch: true
+  //devtool: 'source-map'
 });
 
 compiler.watch({
