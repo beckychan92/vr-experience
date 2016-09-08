@@ -1,4 +1,6 @@
 
+require('./start-webpack.js');
+
 console.info('starting server');
 var boxapi = require('./boxapi.js')
 var express = require('express');
@@ -15,7 +17,7 @@ app.get('/box-content-proxy/:id', function(request, response) {
 	boxapi.streamFileContent(request.params.id, response);
 });
 
-app.use('/', express.static('client'));
+app.use('/', express.static('built/client'));
 
 var port = 5050;
 
